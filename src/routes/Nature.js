@@ -24,7 +24,8 @@ class NaturesEndpoint extends Endpoint {
 	 * @async
 	 * @returns {void}
 	 */
-	get(req, res) {
+	async get(req, res) {
+		if (!await this.checkAuth(req, res)) return true;
 		try {
 			if (!req.params.search) return this.badRequest(req, res);
 			const natureData = req.params.search;

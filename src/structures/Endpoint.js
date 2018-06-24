@@ -55,12 +55,13 @@ class Endpoint {
 	 * @returns {Promise<boolean>}
 	 */
 	async checkAuth(req, res, methodAdminOnly = false) {
-		const auth = req.get('Authorization');
+		const auth = req.header('Authorization', null);
+		console.log(auth);
 		if (!auth) {
 			this.missingAuth(req, res);
 			return false;
 		}
-		const result = await this.database.auth.find(
+		const result = await this.database.users.find(
 			{ where: { token: auth } }
 		);
 		if (!result) {

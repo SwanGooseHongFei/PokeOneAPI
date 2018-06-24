@@ -24,7 +24,8 @@ class TimeEventsEndpoint extends Endpoint {
 	 * @async
 	 * @returns {void}
 	 */
-	get(req, res) {
+	async get(req, res) {
+		if (!await this.checkAuth(req, res)) return true;
 		try {
 			var reply;
 			var bugContest;

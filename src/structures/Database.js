@@ -4,7 +4,7 @@ class Database {
 	constructor() {
 		this.connection = new Sequelize('pokeone', null, null, {
 			dialect: 'sqlite',
-			storage: '../../accounts.sqlite3'
+			storage: './accounts.sqlite3'
 		});
 
 		this.users = this.connection.define('user', {
