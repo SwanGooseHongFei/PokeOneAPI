@@ -1,4 +1,6 @@
 # Packages
+website/
+pics/
 node_modules/
 yarn.lock
 *lock.json
