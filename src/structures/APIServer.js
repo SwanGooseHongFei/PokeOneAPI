@@ -23,14 +23,17 @@ class APIServer {
 		this.server.use(bodyParser.urlencoded({ extended: false }));
 
 		// Time windows in seconds
-		const timeWindow = 1;
+		const timeWindow = 15 * 60;
 		// Amount of API calls per time window
-		const callsPerWindow = 1;
+		const callsPerWindow = 5;
+		// Actual rate in requests per second
+		const actualRate = callsPerWindow / timeWindow;
 
 		this.server.use(restify.plugins.throttle({
-			burst: callsPerWindow / timeWindow,
-			rate: callsPerWindow / timeWindow,
-			ip: true
+			burst: actualRate < 1 ? Math.ceil(actualRate) : Math.floor(actualRate),
+			rate: actualRate,
+			ip: true,
+			setHeaders: true
 		}));
 
 		/**
