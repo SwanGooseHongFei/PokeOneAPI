@@ -17,7 +17,7 @@ class APIServer {
 		 */
 		this.server = server.createServer();
 
-		this.disabledRoutes = ['TimeEvents'];
+		this.disabledRoutes = [];
 
 		this.server.use(bodyParser.json());
 		this.server.use(bodyParser.urlencoded({ extended: false }));
@@ -30,7 +30,7 @@ class APIServer {
 		const actualRate = callsPerWindow / timeWindow;
 
 		this.server.use(restify.plugins.throttle({
-			burst: actualRate < 1 ? Math.ceil(actualRate) : Math.floor(actualRate),
+			burst: actualRate < 1 ? 1 : Math.floor(actualRate),
 			rate: actualRate,
 			ip: true,
 			setHeaders: true

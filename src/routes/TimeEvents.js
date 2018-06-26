@@ -1,3 +1,5 @@
+/* eslint-disable complexity */
+
 const Endpoint = require('../Structures/Endpoint');
 const moment = require('moment');
 
@@ -13,7 +15,7 @@ class TimeEventsEndpoint extends Endpoint {
 		super({
 			name: 'TimeEvents',
 			description: 'Returns information about all time based events',
-			route: '/timevents'
+			route: '/timeevents'
 		});
 	}
 
@@ -27,335 +29,80 @@ class TimeEventsEndpoint extends Endpoint {
 	async get(req, res) {
 		if (!await this.checkAuth(req, res)) return true;
 		try {
-			var reply;
-			var bugContest;
-			var LakeofRage;
-			var laprasEvent;
-			var toOlivine;
-			var toVermilion;
-			var moomoo;
-			var mtmoon;
-			var oldbrother;
-			var youngbrother;
-			var herb;
-			var monica; //monday
-			var tuscany; //tuesday
-			var wesley; //wednesday
-			var arthur; //thursday
-			var frieda; //friday
-			var santos; //saturday
-			var sunny; //sunday
-			var mountMoon;
+			// Setting it to use the servers timezone of UTC-10
+			const now = moment().utcOffset('-1000');
 
-			// already added
-			const now = moment();
+			console.log(now);
 
-			// Reset
-			const reset = moment.duration(now.add(now.hour <= 10 && now.minute() <= 3 ? 0 : 1, 'days')
-				.hours(10)
-				.minutes(3)
-				.diff(now));
+			// Daily reset
+			const dailyReset = this.difference(now, now.day() + 1);
 
+			console.log(now);
 
-			const bugContest = now.day() === 0 && now.hour() < 10 ? 'Now' : this.difference(now, 1);
+			// Bugcontest is on: saturday, monday, thursday
+			const bugContest = [1, 4, 6].includes(now.day()) ? 'Now' :
+				this.difference(now, now.day() < 1 ? 1 : now.day() < 4 ? 4 : now.day() < 6 ? 6 : 8);
 
-			if (moment().day() == "0") {
-				if (moment().hour() < "10") {
-					bugContest = "Now"
-					LakeofRage = moment().day(3).hour(10).minute(03).fromNow()
-					laprasEvent = moment().day(5).hour(10).minute(03).fromNow()
-					toOlivine = "Now"
-					toVermilion = moment().day(1).hour(10).minute(03).fromNow()
-					moomoo = moment().day(0).hour(10).minute(03).fromNow()
-					oldbrother = "Now"
-					youngbrother = moment().day(0).hour(10).minute(03).fromNow()
-					herb = "Now"
-					monica = moment().day(1).hour(10).minute(03).fromNow()
-					tuscany = moment().day(2).hour(10).minute(03).fromNow()
-					wesley = moment().day(3).hour(10).minute(03).fromNow()
-					arthur = moment().day(4).hour(10).minute(03).fromNow()
-					frieda = moment().day(5).hour(10).minute(03).fromNow()
-					santos = "Now"
-					sunny = moment().day(0).hour(10).minute(03).fromNow()
-					today = "Saturday"
+			// Lake of Rage is on: wednesday
+			const LakeofRage = now.day() === 3 ? 'Now' : this.difference(now, 3);
 
-				} else {
-					bugContest = moment().day(1).hour(10).minute(03).fromNow()
-					LakeofRage = moment().day(3).hour(10).minute(03).fromNow()
-					laprasEvent = moment().day(5).hour(10).minute(03).fromNow()
-					toOlivine = moment().day(2).hour(10).minute(03).fromNow()
-					toVermilion = moment().day(1).hour(10).minute(03).fromNow()
-					moomoo = "Now"
-					oldbrother = moment().day(2).hour(10).minute(03).fromNow()
-					youngbrother = "Now"
-					herb = "Now"
-					monica = moment().day(1).hour(10).minute(03).fromNow()
-					tuscany = moment().day(2).hour(10).minute(03).fromNow()
-					wesley = moment().day(3).hour(10).minute(03).fromNow()
-					arthur = moment().day(4).hour(10).minute(03).fromNow()
-					frieda = moment().day(5).hour(10).minute(03).fromNow()
-					santos = moment().day(6).hour(10).minute(03).fromNow()
-					sunny = "Now"
-					today = "Sunday"
+			// Lapras event is on: friday
+			const laprasEvent = now.day() === 5 ? 'Now' : this.difference(now, 5);
 
-				}
-			} else
-			if (moment().day() == "1") {
-				if (moment().hour() < "10") {
-					bugContest = moment().day(1).hour(10).minute(03).fromNow()
-					LakeofRage = moment().day(3).hour(10).minute(03).fromNow()
-					laprasEvent = moment().day(5).hour(10).minute(03).fromNow()
-					toOlivine = moment().day(2).hour(10).minute(03).fromNow()
-					toVermilion = moment().day(1).hour(10).minute(03).fromNow()
-					moomoo = "Now"
-					oldbrother = moment().day(2).hour(10).minute(03).fromNow()
-					youngbrother = "Now"
-					herb = "Now"
-					monica = moment().day(1).hour(10).minute(03).fromNow()
-					tuscany = moment().day(2).hour(10).minute(03).fromNow()
-					wesley = moment().day(3).hour(10).minute(03).fromNow()
-					arthur = moment().day(4).hour(10).minute(03).fromNow()
-					frieda = moment().day(5).hour(10).minute(03).fromNow()
-					santos = moment().day(6).hour(10).minute(03).fromNow()
-					sunny = "Now"
-					today = "Sunday"
+			// To olivine is on: tuesday, thursday, sunday
+			const toOlivine = [2, 4, 6].includes(now.day()) ? 'Now' :
+				this.difference(now, now.day() < 2 ? 2 : now.day() < 4 ? 4 : now.day() < 6 ? 6 : 9);
 
-				} else {
-					bugContest = "Now"
-					LakeofRage = moment().day(3).hour(10).minute(03).fromNow()
-					laprasEvent = moment().day(5).hour(10).minute(03).fromNow()
-					toOlivine = moment().day(2).hour(10).minute(03).fromNow()
-					moomoo = moment().day(3).hour(10).minute(03).fromNow()
-					toVermilion = "Now"
-					oldbrother = moment().day(2).hour(10).minute(03).fromNow()
-					youngbrother = moment().day(3).hour(10).minute(03).fromNow()
-					herb = moment().day(6).hour(10).minute(03).fromNow()
-					monica = "Now"
-					tuscany = moment().day(2).hour(10).minute(03).fromNow()
-					wesley = moment().day(3).hour(10).minute(03).fromNow()
-					arthur = moment().day(4).hour(10).minute(03).fromNow()
-					frieda = moment().day(5).hour(10).minute(03).fromNow()
-					santos = moment().day(6).hour(10).minute(03).fromNow()
-					sunny = moment().day(7).hour(10).minute(03).fromNow()
-					today = "Monday"
+			// To vermillion is on: monday, wednesday, friday
+			const toVermilion = [1, 3, 5].includes(now.day()) ? 'Now' :
+				this.difference(now, now.day() < 1 ? 1 : now.day() < 3 ? 3 : now.day() < 5 ? 5 : 8);
 
-				}
-			} else
-			if (moment().day() == "2") {
-				if (moment().hour() < "10") {
-					bugContest = "Now"
-					LakeofRage = moment().day(3).hour(10).minute(03).fromNow()
-					laprasEvent = moment().day(5).hour(10).minute(03).fromNow()
-					toOlivine = moment().day(2).hour(10).minute(03).fromNow()
-					toVermilion = "Now"
-					moomoo = moment().day(3).hour(10).minute(03).fromNow()
-					oldbrother = moment().day(2).hour(10).minute(03).fromNow()
-					youngbrother = moment().day(3).hour(10).minute(03).fromNow()
-					herb = moment().day(6).hour(10).minute(03).fromNow()
-					monica = "Now"
-					tuscany = moment().day(2).hour(10).minute(03).fromNow()
-					wesley = moment().day(3).hour(10).minute(03).fromNow()
-					arthur = moment().day(4).hour(10).minute(03).fromNow()
-					frieda = moment().day(5).hour(10).minute(03).fromNow()
-					santos = moment().day(6).hour(10).minute(03).fromNow()
-					sunny = moment().day(7).hour(10).minute(03).fromNow()
-					today = "Monday"
-				} else {
-					bugContest = moment().day(4).hour(10).minute(03).fromNow()
-					LakeofRage = moment().day(3).hour(10).minute(03).fromNow()
-					laprasEvent = moment().day(5).hour(10).minute(03).fromNow()
-					toOlivine = "Now"
-					toVermilion = moment().day(3).hour(10).minute(03).fromNow()
-					moomoo = moment().day(3).hour(10).minute(03).fromNow()
-					oldbrother = "Now"
-					youngbrother = moment().day(3).hour(10).minute(03).fromNow()
-					herb = moment().day(6).hour(10).minute(03).fromNow()
-					monica = moment().day(8).hour(10).minute(03).fromNow()
-					tuscany = "Now"
-					wesley = moment().day(3).hour(10).minute(03).fromNow()
-					arthur = moment().day(4).hour(10).minute(03).fromNow()
-					frieda = moment().day(5).hour(10).minute(03).fromNow()
-					santos = moment().day(6).hour(10).minute(03).fromNow()
-					sunny = moment().day(7).hour(10).minute(03).fromNow()
-					today = "Tuesday"
+			// MooMoo farm is on: sunday and wednesday
+			const moomoo = [0, 3].includes(now.day()) ? 'Now' :
+				this.difference(now, now.day() < 3 ? 3 : 7);
 
-				}
-			} else
-			if (moment().day() == "3") {
-				if (moment().hour() < "10") {
-					bugContest = moment().day(4).hour(10).minute(03).fromNow()
-					LakeofRage = moment().day(3).hour(10).minute(03).fromNow()
-					laprasEvent = moment().day(5).hour(10).minute(03).fromNow()
-					toOlivine = "Now"
-					toVermilion = moment().day(3).hour(10).minute(03).fromNow()
-					moomoo = moment().day(3).hour(10).minute(03).fromNow()
-					oldbrother = "Now"
-					youngbrother = moment().day(3).hour(10).minute(03).fromNow()
-					herb = moment().day(6).hour(10).minute(03).fromNow()
-					monica = moment().day(8).hour(10).minute(03).fromNow()
-					tuscany = "Now"
-					wesley = moment().day(3).hour(10).minute(03).fromNow()
-					arthur = moment().day(4).hour(10).minute(03).fromNow()
-					frieda = moment().day(5).hour(10).minute(03).fromNow()
-					santos = moment().day(6).hour(10).minute(03).fromNow()
-					sunny = moment().day(7).hour(10).minute(03).fromNow()
-					today = "Tuesday"
+			// Old Brother is on: tuesday, thursday, saturday
+			const oldBrother = [2, 4, 6].includes(now.day()) ? 'Now' :
+				this.difference(now, now.day() < 2 ? 2 : now.day() < 4 ? 4 : now.day() < 6 ? 6 : 9);
 
-				} else {
-					bugContest = moment().day(4).hour(10).minute(03).fromNow()
-					LakeofRage = "Now"
-					laprasEvent = moment().day(5).hour(10).minute(03).fromNow()
-					toOlivine = moment().day(4).hour(10).minute(03).fromNow()
-					toVermilion = "Now"
-					moomoo = "Now"
-					oldbrother = moment().day(4).hour(10).minute(03).fromNow()
-					youngbrother = "Now"
-					herb = moment().day(6).hour(10).minute(03).fromNow()
-					monica = moment().day(8).hour(10).minute(03).fromNow()
-					tuscany = moment().day(9).hour(10).minute(03).fromNow()
-					wesley = "Now"
-					arthur = moment().day(4).hour(10).minute(03).fromNow()
-					frieda = moment().day(5).hour(10).minute(03).fromNow()
-					santos = moment().day(6).hour(10).minute(03).fromNow()
-					sunny = moment().day(7).hour(10).minute(03).fromNow()
-					today = "Wednesday"
+			// Young Brother is on: monday, wednesday, friday
+			const youngBrother = [1, 3, 5].includes(now.day()) ? 'Now' :
+				this.difference(now, now.day() < 1 ? 1 : now.day() < 3 ? 3 : now.day() < 5 ? 5 : 8);
 
-				}
-			} else
-			if (moment().day() == "4") {
-				if (moment().hour() < "10") {
-					bugContest = moment().day(4).hour(10).minute(03).fromNow()
-					LakeofRage = "Now"
-					laprasEvent = moment().day(5).hour(10).minute(03).fromNow()
-					toOlivine = moment().day(4).hour(10).minute(03).fromNow()
-					toVermilion = "Now"
-					moomoo = "Now"
-					oldbrother = moment().day(4).hour(10).minute(03).fromNow()
-					youngbrother = "Now"
-					herb = moment().day(6).hour(10).minute(03).fromNow()
-					monica = moment().day(8).hour(10).minute(03).fromNow()
-					tuscany = moment().day(9).hour(10).minute(03).fromNow()
-					wesley = "Now"
-					arthur = moment().day(4).hour(10).minute(03).fromNow()
-					frieda = moment().day(5).hour(10).minute(03).fromNow()
-					santos = moment().day(6).hour(10).minute(03).fromNow()
-					sunny = moment().day(7).hour(10).minute(03).fromNow()
-					today = "Wednesday"
+			// Herb is on: saturday and sunday
+			const herb = [0, 6].includes(now.day()) ? 'Now' :
+				this.difference(now, now.day() < 6 ? 6 : 7);
 
-				} else {
-					bugContest = "Now"
-					LakeofRage = moment().day(10).hour(10).minute(03).fromNow()
-					laprasEvent = moment().day(5).hour(10).minute(03).fromNow()
-					toOlivine = "Now"
-					toVermilion = moment().day(5).hour(10).minute(03).fromNow()
-					moomoo = moment().day(7).hour(10).minute(03).fromNow()
-					oldbrother = "Now"
-					youngbrother = moment().day(5).hour(10).minute(03).fromNow()
-					herb = moment().day(6).hour(10).minute(03).fromNow()
-					monica = moment().day(8).hour(10).minute(03).fromNow()
-					tuscany = moment().day(9).hour(10).minute(03).fromNow()
-					wesley = moment().day(10).hour(10).minute(03).fromNow()
-					arthur = "Now"
-					frieda = moment().day(5).hour(10).minute(03).fromNow()
-					santos = moment().day(6).hour(10).minute(03).fromNow()
-					sunny = moment().day(7).hour(10).minute(03).fromNow()
-					today = "Thursday"
+			const today = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][now.day()];
 
-				}
-			} else
-			if (moment().day() == "5") {
-				if (moment().hour() < "10") {
-					bugContest = "Now"
-					LakeofRage = moment().day(10).hour(10).minute(03).fromNow()
-					laprasEvent = moment().day(5).hour(10).minute(03).fromNow()
-					toOlivine = "Now"
-					toVermilion = moment().day(5).hour(10).minute(03).fromNow()
-					moomoo = moment().day(7).hour(10).minute(03).fromNow()
-					oldbrother = "Now"
-					youngbrother = moment().day(5).hour(10).minute(03).fromNow()
-					herb = moment().day(6).hour(10).minute(03).fromNow()
-					monica = moment().day(8).hour(10).minute(03).fromNow()
-					tuscany = moment().day(9).hour(10).minute(03).fromNow()
-					wesley = moment().day(10).hour(10).minute(03).fromNow()
-					arthur = "Now"
-					frieda = moment().day(5).hour(10).minute(03).fromNow()
-					santos = moment().day(6).hour(10).minute(03).fromNow()
-					sunny = moment().day(7).hour(10).minute(03).fromNow()
-					today = "Thursday"
+			const sunny = now.day() === 0 ? 'Now' : this.difference(now, 7);
 
-				} else {
-					bugContest = moment().day(6).hour(10).minute(03).fromNow()
-					LakeofRage = moment().day(10).hour(10).minute(03).fromNow()
-					laprasEvent = "Now"
-					toOlivine = moment().day(6).hour(10).minute(03).fromNow()
-					toVermilion = "Now"
-					moomoo = moment().day(7).hour(10).minute(03).fromNow()
-					oldbrother = moment().day(6).hour(10).minute(03).fromNow()
-					youngbrother = "Now"
-					herb = moment().day(6).hour(10).minute(03).fromNow()
-					monica = moment().day(8).hour(10).minute(03).fromNow()
-					tuscany = moment().day(9).hour(10).minute(03).fromNow()
-					wesley = moment().day(10).hour(10).minute(03).fromNow()
-					arthur = moment().day(11).hour(10).minute(03).fromNow()
-					frieda = "Now"
-					santos = moment().day(6).hour(10).minute(03).fromNow()
-					sunny = moment().day(7).hour(10).minute(03).fromNow()
-					today = "Friday"
+			const monica = now.day() === 1 ? 'Now' : this.difference(now, now.day() < 1 ? 1 : 8);
 
-				}
-			} else
-			if (moment().day() == "6") {
-				if (moment().hour() < "10") {
-					bugContest = moment().day(6).hour(10).minute(03).fromNow()
-					LakeofRage = moment().day(10).hour(10).minute(03).fromNow()
-					laprasEvent = "Now"
-					toOlivine = moment().day(6).hour(10).minute(03).fromNow()
-					toVermilion = "Now"
-					moomoo = moment().day(7).hour(10).minute(03).fromNow()
-					oldbrother = moment().day(6).hour(10).minute(03).fromNow()
-					youngbrother = "Now"
-					herb = moment().day(6).hour(10).minute(03).fromNow()
-					monica = moment().day(8).hour(10).minute(03).fromNow()
-					tuscany = moment().day(9).hour(10).minute(03).fromNow()
-					wesley = moment().day(10).hour(10).minute(03).fromNow()
-					arthur = moment().day(11).hour(10).minute(03).fromNow()
-					frieda = "Now"
-					santos = moment().day(6).hour(10).minute(03).fromNow()
-					sunny = moment().day(7).hour(10).minute(03).fromNow()
-					today = "Friday"
+			const tuscany = now.day() === 2 ? 'Now' : this.difference(now, now.day() < 2 ? 2 : 9);
 
-				} else {
-					bugContest = "Now"
-					LakeofRage = moment().day(10).hour(10).minute(03).fromNow()
-					laprasEvent = moment().day(12).hour(10).minute(03).fromNow()
-					toOlivine = "Now"
-					toVermilion = moment().day(8).hour(10).minute(03).fromNow()
-					moomoo = moment().day(7).hour(10).minute(03).fromNow()
-					oldbrother = "Now"
-					youngbrother = moment().day(7).hour(10).minute(03).fromNow()
-					herb = "Now"
-					monica = moment().day(8).hour(10).minute(03).fromNow()
-					tuscany = moment().day(9).hour(10).minute(03).fromNow()
-					wesley = moment().day(10).hour(10).minute(03).fromNow()
-					arthur = moment().day(11).hour(10).minute(03).fromNow()
-					frieda = moment().day(12).hour(10).minute(03).fromNow()
-					santos = "Now"
-					sunny = moment().day(7).hour(10).minute(03).fromNow()
-					today = "Saturday"
+			const wesley = now.day() === 3 ? 'Now' : this.difference(now, now.day() < 3 ? 3 : 10);
 
-				}
-			}
+			const arthur = now.day() === 4 ? 'Now' : this.difference(now, now.day() < 4 ? 4 : 11);
 
-			reply = {
-				dailyReset: reset,
+			const frieda = now.day() === 5 ? 'Now' : this.difference(now, now.day() < 5 ? 5 : 12);
+
+			const santos = now.day() === 6 ? 'Now' : this.difference(now, now.day() < 6 ? 6 : 13);
+
+			console.log(now);
+
+			console.log(this.difference(now, 13));
+
+			return this.success(req, res, {
+				dailyReset: dailyReset,
 				bug: bugContest,
 				rage: LakeofRage,
 				unioncaveb2f: laprasEvent,
 				olivine: toOlivine,
 				vermilion: toVermilion,
 				moomoofarm: moomoo,
-				hairdresser1: oldbrother,
-				hairdresser2: youngbrother,
+				hairdresser1: oldBrother,
+				hairdresser2: youngBrother,
 				herbshop: herb,
 				mon: monica,
 				tue: tuscany,
@@ -365,9 +112,7 @@ class TimeEventsEndpoint extends Endpoint {
 				sat: santos,
 				sun: sunny,
 				day: today
-			};
-			response.send(reply)
-
+			});
 		} catch (error) {
 			return this.internalError(req, res, error);
 		}
@@ -377,15 +122,21 @@ class TimeEventsEndpoint extends Endpoint {
 	 * Calculates how long it is till reset
 	 * @param {moment.Moment} now Time of now
 	 * @param {number} day The day to skip to
-	 * @returns {string} Difference in format of hh:mm:ss 
+	 * @returns {string} Difference in format of hh:mm:ss
 	 */
 	difference(now, day) {
-		const reset = moment.duration(now.days(now.hour <= 10 && now.minute() <= 3 ? 0 : day)
-				.hours(10)
-				.minutes(3)
-				.diff(now));
+		const reset = moment.duration(moment().utcOffset('-1000').days(day)
+			.hours(0)
+			.minutes(0)
+			.diff(now));
 
-		return `in ${reset.hour()}h:${reset.minute()}m:${reset.seconds()}s`;
+		console.log(moment().days(day).hours(0)
+			.minutes(0));
+		console.log(now);
+
+		console.log(reset.humanize());
+		return reset.days() >= 1 ? `in ${reset.days() + 1}day${reset.days() === 1 ? '' : 's'}` :
+			`in ${reset.hours()}h:${reset.minutes()}m:${reset.seconds()}s`;
 	}
 }
 
