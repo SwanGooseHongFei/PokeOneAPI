@@ -1,4 +1,4 @@
-const Endpoint = require('../Structures/Endpoint');
+const Endpoint = require('../../Structures/Endpoint');
 const fs = require('fs');
 
 /**
@@ -13,7 +13,8 @@ class PokemonEndpoint extends Endpoint {
 		super({
 			name: 'Pokemon',
 			description: 'Returns information of a specific Pokemon',
-			route: '/pokemon/:search'
+			route: 'pokemon/:search',
+			version: 1
 		});
 	}
 

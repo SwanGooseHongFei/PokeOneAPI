@@ -1,6 +1,6 @@
 /* eslint-disable complexity */
 
-const Endpoint = require('../Structures/Endpoint');
+const Endpoint = require('../../Structures/Endpoint');
 const moment = require('moment');
 
 /**
@@ -15,7 +15,8 @@ class TimeEventsEndpoint extends Endpoint {
 		super({
 			name: 'TimeEvents',
 			description: 'Returns information about all time based events',
-			route: '/timeevents'
+			route: 'timeevents',
+			version: 1
 		});
 	}
 

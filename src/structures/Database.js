@@ -22,6 +22,11 @@ class Database {
 				type: Sequelize.TEXT,
 				unique: true,
 				allowNull: false
+			},
+			type: {
+				type: Sequelize.TEXT,
+				unique: false,
+				allowNull: false
 			}
 		});
 

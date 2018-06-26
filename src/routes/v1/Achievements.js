@@ -1,4 +1,4 @@
-const Endpoint = require('../Structures/Endpoint');
+const Endpoint = require('../../Structures/Endpoint');
 const fs = require('fs');
 
 /**
@@ -11,9 +11,10 @@ const fs = require('fs');
 class AchievementsEndpoint extends Endpoint {
 	constructor() {
 		super({
-			name: 'Ability',
-			description: 'Returns information of a specific Ability',
-			route: '/ability/:search'
+			name: 'Achievemnts',
+			description: 'Returns information of a specific Achievement',
+			route: 'achievements/:search',
+			version: 1
 		});
 	}
 
@@ -28,19 +29,19 @@ class AchievementsEndpoint extends Endpoint {
 		if (!await this.checkAuth(req, res)) return true;
 		try {
 			if (!req.params.search) return this.badRequest(req, res);
-			const abilityData = req.params.search;
+			const p1AchievementsData = req.params.search;
 
-			if (fs.existsSync('./data/abilities/ability.json')) {
-				const abilityInfo = JSON.parse(fs.readFileSync('./data/abilities/ability.json'));
+			if (fs.existsSync('./data/ingame/achievements.json')) {
+				const p1AchievementsInfo = JSON.parse(fs.readFileSync('./data/ingame/achievements.json'));
 
-				if (abilityInfo[abilityData]) {
+				if (p1AchievementsInfo[p1AchievementsData]) {
 					return this.success(req, res, {
 						status: '200',
-						search: abilityData,
-						info: abilityInfo[abilityData]
+						search: p1AchievementsData,
+						data: p1AchievementsInfo[p1AchievementsData]
 					});
 				} else {
-					return this.notFound(req, res, `Couldn't find ability ${abilityData}`);
+					return this.notFound(req, res, `Couldn't find achievement ${p1AchievementsData}`);
 				}
 			} else {
 				return this.notFound(req, res, 'File not found on disk');

@@ -1,4 +1,4 @@
-const Endpoint = require('../Structures/Endpoint');
+const Endpoint = require('../../Structures/Endpoint');
 const fs = require('fs');
 
 /**
@@ -13,7 +13,8 @@ class MoveEndpoint extends Endpoint {
 		super({
 			name: 'Moves',
 			description: 'Returns information of a specific Move',
-			route: '/moves/:search'
+			route: 'moves/:search',
+			version: 1
 		});
 	}
 

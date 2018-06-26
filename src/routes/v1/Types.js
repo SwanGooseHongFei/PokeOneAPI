@@ -1,19 +1,20 @@
-const Endpoint = require('../Structures/Endpoint');
+const Endpoint = require('../../Structures/Endpoint');
 const fs = require('fs');
 
 /**
- * Item Endpoint
+ * Types Endpoint
  * @property {string} name
  * @property {string} description
  * @property {string} route
  * @extends {Endpoint}
  */
-class ItemEndpoint extends Endpoint {
+class TypesEndpoint extends Endpoint {
 	constructor() {
 		super({
-			name: 'Items',
-			description: 'Returns information of a specific Item',
-			route: '/items/:search'
+			name: 'Types',
+			description: 'Returns information of a specific Type',
+			route: 'types/:search',
+			version: 1
 		});
 	}
 
@@ -28,19 +29,19 @@ class ItemEndpoint extends Endpoint {
 		if (!await this.checkAuth(req, res)) return true;
 		try {
 			if (!req.params.search) return this.badRequest(req, res);
-			const itemsData = req.params.search;
+			const typesData = req.params.search;
 
-			if (fs.existsSync(`./data/items/items.json`)) {
-				const itemsInfo = JSON.parse(fs.readFileSync('./data/items/items.json'));
+			if (fs.existsSync('./data/types/types.json')) {
+				const typesInfo = JSON.parse(fs.readFileSync('./data/types/types.json'));
 
-				if (itemsInfo[itemsData]) {
+				if (typesInfo[typesData]) {
 					return this.success(req, res, {
 						status: '200',
-						search: itemsData,
-						data: itemsInfo[itemsData]
+						search: typesData,
+						info: typesInfo[typesData]
 					});
 				} else {
-					return this.notFound(req, res, `Couldn't find item ${itemsData}`);
+					return this.notFound(req, res, `Couldn't find type ${typesData}`);
 				}
 			} else {
 				return this.notFound(req, res, 'File not found on disk');
@@ -51,4 +52,4 @@ class ItemEndpoint extends Endpoint {
 	}
 }
 
-module.exports = ItemEndpoint;
+module.exports = TypesEndpoint;

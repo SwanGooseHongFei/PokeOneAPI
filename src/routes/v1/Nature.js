@@ -1,19 +1,20 @@
-const Endpoint = require('../Structures/Endpoint');
+const Endpoint = require('../../Structures/Endpoint');
 const fs = require('fs');
 
 /**
- * Guilds Endpoint
+ * Natures Endpoint
  * @property {string} name
  * @property {string} description
  * @property {string} route
  * @extends {Endpoint}
  */
-class GuildsEndpoint extends Endpoint {
+class NaturesEndpoint extends Endpoint {
 	constructor() {
 		super({
-			name: 'Guilds',
-			description: 'Returns information of a specific Guild',
-			route: '/guilds/:search'
+			name: 'Nature',
+			description: 'Returns information of a specific Nature',
+			route: 'nature/:search',
+			version: 1
 		});
 	}
 
@@ -28,19 +29,19 @@ class GuildsEndpoint extends Endpoint {
 		if (!await this.checkAuth(req, res)) return true;
 		try {
 			if (!req.params.search) return this.badRequest(req, res);
-			const guildsData = req.params.search;
+			const natureData = req.params.search;
 
-			if (fs.existsSync('./data/ingame/guilds.json')) {
-				const guildsInfo = JSON.parse(fs.readFileSync('./data/ingame/guilds.json'));
+			if (fs.existsSync('./data/nature/nature.json')) {
+				const natureInfo = JSON.parse(fs.readFileSync('./data/nature/nature.json'));
 
-				if (guildsInfo[guildsData]) {
+				if (natureInfo[natureData]) {
 					return this.success(req, res, {
 						status: '200',
-						search: guildsData,
-						data: guildsInfo[guildsData]
+						search: natureData,
+						data: natureInfo[natureData]
 					});
 				} else {
-					return this.notFound(req, res, `Couldn't find guild ${guildsData}`);
+					return this.notFound(req, res, `Couldn't find nature ${natureData}`);
 				}
 			} else {
 				return this.notFound(req, res, 'File not found on disk');
@@ -51,4 +52,4 @@ class GuildsEndpoint extends Endpoint {
 	}
 }
 
-module.exports = GuildsEndpoint;
+module.exports = NaturesEndpoint;

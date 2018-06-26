@@ -1,19 +1,20 @@
-const Endpoint = require('../Structures/Endpoint');
+const Endpoint = require('../../Structures/Endpoint');
 const fs = require('fs');
 
 /**
- * Natures Endpoint
+ * Quests Endpoint
  * @property {string} name
  * @property {string} description
  * @property {string} route
  * @extends {Endpoint}
  */
-class NaturesEndpoint extends Endpoint {
+class QuestsEndpoint extends Endpoint {
 	constructor() {
 		super({
-			name: 'Nature',
-			description: 'Returns information of a specific Nature',
-			route: '/nature/:search'
+			name: 'Quests',
+			description: 'Returns information of a specific Quest',
+			route: 'quests/:search',
+			version: 1
 		});
 	}
 
@@ -28,19 +29,19 @@ class NaturesEndpoint extends Endpoint {
 		if (!await this.checkAuth(req, res)) return true;
 		try {
 			if (!req.params.search) return this.badRequest(req, res);
-			const natureData = req.params.search;
+			const p1QuestsData = req.params.search;
 
-			if (fs.existsSync('./data/nature/nature.json')) {
-				const natureInfo = JSON.parse(fs.readFileSync('./data/nature/nature.json'));
+			if (fs.existsSync('./data/ingame/quests.json')) {
+				const p1QuestsInfo = JSON.parse(fs.readFileSync('./data/ingame/quests.json'));
 
-				if (natureInfo[natureData]) {
+				if (p1QuestsInfo[p1QuestsData]) {
 					return this.success(req, res, {
 						status: '200',
-						search: natureData,
-						data: natureInfo[natureData]
+						search: p1QuestsData,
+						data: p1QuestsInfo[p1QuestsData]
 					});
 				} else {
-					return this.notFound(req, res, `Couldn't find nature ${natureData}`);
+					return this.notFound(req, res, `Couldn't find quest ${p1QuestsData}`);
 				}
 			} else {
 				return this.notFound(req, res, 'File not found on disk');
@@ -51,4 +52,4 @@ class NaturesEndpoint extends Endpoint {
 	}
 }
 
-module.exports = NaturesEndpoint;
+module.exports = QuestsEndpoint;

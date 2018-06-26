@@ -22,19 +22,33 @@ class APIServer {
 		this.server.use(bodyParser.json());
 		this.server.use(bodyParser.urlencoded({ extended: false }));
 
-		// Time windows in seconds
-		const timeWindow = 15 * 60;
-		// Amount of API calls per time window
-		const callsPerWindow = 5;
-		// Actual rate in requests per second
-		const actualRate = callsPerWindow / timeWindow;
+		const rateList = {
+			public: {
+				// Time windows in seconds
+				timeWindow: 15 * 60,
+				// Amount of API calls per time window
+				callsPerWindow: 5
+			},
+			private: {
+				// Time windows in seconds
+				timeWindow: 1,
+				// Amount of API calls per time window
+				callsPerWindow: 1
+			}
+		};
 
-		this.server.use(restify.plugins.throttle({
-			burst: actualRate < 1 ? 1 : Math.floor(actualRate),
-			rate: actualRate,
-			ip: true,
-			setHeaders: true
-		}));
+		this.limiterList = {};
+
+		for (const rate in rateList) {
+			const actualRate = rateList[rate].callsPerWindow / rateList[rate].timeWindow;
+			console.log(actualRate);
+			this.limiterList[rate] = restify.plugins.throttle({
+				burst: actualRate < 1 ? 1 : Math.floor(actualRate),
+				rate: actualRate,
+				ip: true,
+				setHeaders: true
+			});
+		}
 
 		/**
 		 * The set of route this server uses
@@ -64,16 +78,25 @@ class APIServer {
 		files.forEach(file => {
 			if (this.disabledRoutes.includes(file.slice(0, -3))) return;
 			file = path.join(dir, file);
+			if (fs.statSync(file).isDirectory()) {
+				this.loadRoutes(file);
+				return;
+			}
 			const endpoint = new (require(file))();
 			this.routes.add(endpoint);
 
-			this.server.get(`/v1${endpoint.route}`, endpoint.get ? endpoint.get.bind(endpoint) : this.notAllowed);
-			this.server.post(`/v1${endpoint.route}`, endpoint.post ? endpoint.post.bind(endpoint) : this.notAllowed);
-			this.server.patch(`/v1${endpoint.route}`, endpoint.patch ? endpoint.patch.bind(endpoint) : this.notAllowed);
-			this.server.del(`/v1${endpoint.route}`, endpoint.delete ? endpoint.delete.bind(endpoint) : this.notAllowed);
+			for (const type in this.limiterList) {
+				this.server.get(`/${type}/v${endpoint.version}/${endpoint.route}`,
+					this.limiterList[type], endpoint.get ? endpoint.get.bind(endpoint) : this.notAllowed);
+				this.server.post(`/${type}/v${endpoint.version}/${endpoint.route}`,
+					this.limiterList[type], endpoint.post ? endpoint.post.bind(endpoint) : this.notAllowed);
+				this.server.patch(`/${type}/v${endpoint.version}/${endpoint.route}`,
+					this.limiterList[type], endpoint.patch ? endpoint.patch.bind(endpoint) : this.notAllowed);
+				this.server.del(`/${type}/v${endpoint.version}/${endpoint.route}`,
+					this.limiterList[type], endpoint.delete ? endpoint.delete.bind(endpoint) : this.notAllowed);
+			}
 		});
 	}
-
 	/**
 	 * Method to call
 	 * @param {number} port Port to listen on

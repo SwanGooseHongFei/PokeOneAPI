@@ -1,19 +1,20 @@
-const Endpoint = require('../Structures/Endpoint');
+const Endpoint = require('../../Structures/Endpoint');
 const fs = require('fs');
 
 /**
- * Location Endpoint
+ * Achievements Endpoint
  * @property {string} name
  * @property {string} description
  * @property {string} route
  * @extends {Endpoint}
  */
-class LocationEndpoint extends Endpoint {
+class AchievementsEndpoint extends Endpoint {
 	constructor() {
 		super({
-			name: 'Location',
-			description: 'Returns information of a specific Location',
-			route: '/location/:search'
+			name: 'Ability',
+			description: 'Returns information of a specific Ability',
+			route: 'ability/:search',
+			version: 1
 		});
 	}
 
@@ -28,19 +29,19 @@ class LocationEndpoint extends Endpoint {
 		if (!await this.checkAuth(req, res)) return true;
 		try {
 			if (!req.params.search) return this.badRequest(req, res);
-			const locationData = req.params.search;
+			const abilityData = req.params.search;
 
-			if (fs.existsSync('./data/ingame/location.json')) {
-				const locationInfo = JSON.parse(fs.readFileSync('./data/ingame/location.json'));
+			if (fs.existsSync('./data/abilities/ability.json')) {
+				const abilityInfo = JSON.parse(fs.readFileSync('./data/abilities/ability.json'));
 
-				if (locationInfo[locationData]) {
+				if (abilityInfo[abilityData]) {
 					return this.success(req, res, {
 						status: '200',
-						search: locationData,
-						info: locationInfo[locationData]
+						search: abilityData,
+						info: abilityInfo[abilityData]
 					});
 				} else {
-					return this.notFound(req, res, `Couldn't find location ${locationData}`);
+					return this.notFound(req, res, `Couldn't find ability ${abilityData}`);
 				}
 			} else {
 				return this.notFound(req, res, 'File not found on disk');
@@ -51,4 +52,4 @@ class LocationEndpoint extends Endpoint {
 	}
 }
 
-module.exports = LocationEndpoint;
+module.exports = AchievementsEndpoint;

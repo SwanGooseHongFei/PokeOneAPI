@@ -1,19 +1,20 @@
-const Endpoint = require('../Structures/Endpoint');
+const Endpoint = require('../../Structures/Endpoint');
 const fs = require('fs');
 
 /**
- * Types Endpoint
+ * Guilds Endpoint
  * @property {string} name
  * @property {string} description
  * @property {string} route
  * @extends {Endpoint}
  */
-class TypesEndpoint extends Endpoint {
+class GuildsEndpoint extends Endpoint {
 	constructor() {
 		super({
-			name: 'Types',
-			description: 'Returns information of a specific Type',
-			route: '/types/:search'
+			name: 'Guilds',
+			description: 'Returns information of a specific Guild',
+			route: 'guilds/:search',
+			version: 1
 		});
 	}
 
@@ -28,19 +29,19 @@ class TypesEndpoint extends Endpoint {
 		if (!await this.checkAuth(req, res)) return true;
 		try {
 			if (!req.params.search) return this.badRequest(req, res);
-			const typesData = req.params.search;
+			const guildsData = req.params.search;
 
-			if (fs.existsSync('./data/types/types.json')) {
-				const typesInfo = JSON.parse(fs.readFileSync('./data/types/types.json'));
+			if (fs.existsSync('./data/ingame/guilds.json')) {
+				const guildsInfo = JSON.parse(fs.readFileSync('./data/ingame/guilds.json'));
 
-				if (typesInfo[typesData]) {
+				if (guildsInfo[guildsData]) {
 					return this.success(req, res, {
 						status: '200',
-						search: typesData,
-						info: typesInfo[typesData]
+						search: guildsData,
+						data: guildsInfo[guildsData]
 					});
 				} else {
-					return this.notFound(req, res, `Couldn't find type ${typesData}`);
+					return this.notFound(req, res, `Couldn't find guild ${guildsData}`);
 				}
 			} else {
 				return this.notFound(req, res, 'File not found on disk');
@@ -51,4 +52,4 @@ class TypesEndpoint extends Endpoint {
 	}
 }
 
-module.exports = TypesEndpoint;
+module.exports = GuildsEndpoint;

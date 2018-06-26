@@ -1,19 +1,20 @@
-const Endpoint = require('../Structures/Endpoint');
+const Endpoint = require('../../Structures/Endpoint');
 const fs = require('fs');
 
 /**
- * Quests Endpoint
+ * Item Endpoint
  * @property {string} name
  * @property {string} description
  * @property {string} route
  * @extends {Endpoint}
  */
-class QuestsEndpoint extends Endpoint {
+class ItemEndpoint extends Endpoint {
 	constructor() {
 		super({
-			name: 'Quests',
-			description: 'Returns information of a specific Quest',
-			route: '/quests/:search'
+			name: 'Items',
+			description: 'Returns information of a specific Item',
+			route: 'items/:search',
+			version: 1
 		});
 	}
 
@@ -28,19 +29,19 @@ class QuestsEndpoint extends Endpoint {
 		if (!await this.checkAuth(req, res)) return true;
 		try {
 			if (!req.params.search) return this.badRequest(req, res);
-			const p1QuestsData = req.params.search;
+			const itemsData = req.params.search;
 
-			if (fs.existsSync('./data/ingame/quests.json')) {
-				const p1QuestsInfo = JSON.parse(fs.readFileSync('./data/ingame/quests.json'));
+			if (fs.existsSync(`./data/items/items.json`)) {
+				const itemsInfo = JSON.parse(fs.readFileSync('./data/items/items.json'));
 
-				if (p1QuestsInfo[p1QuestsData]) {
+				if (itemsInfo[itemsData]) {
 					return this.success(req, res, {
 						status: '200',
-						search: p1QuestsData,
-						data: p1QuestsInfo[p1QuestsData]
+						search: itemsData,
+						data: itemsInfo[itemsData]
 					});
 				} else {
-					return this.notFound(req, res, `Couldn't find quest ${p1QuestsData}`);
+					return this.notFound(req, res, `Couldn't find item ${itemsData}`);
 				}
 			} else {
 				return this.notFound(req, res, 'File not found on disk');
@@ -51,4 +52,4 @@ class QuestsEndpoint extends Endpoint {
 	}
 }
 
-module.exports = QuestsEndpoint;
+module.exports = ItemEndpoint;

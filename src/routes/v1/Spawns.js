@@ -1,4 +1,4 @@
-const Endpoint = require('../Structures/Endpoint');
+const Endpoint = require('../../Structures/Endpoint');
 const fs = require('fs');
 
 /**
@@ -13,7 +13,8 @@ class SpawnsEndpoint extends Endpoint {
 		super({
 			name: 'Spawns',
 			description: 'Returns information of a specific Spawn',
-			route: '/spawns/:search'
+			route: 'spawns/:search',
+			version: 1
 		});
 	}
 

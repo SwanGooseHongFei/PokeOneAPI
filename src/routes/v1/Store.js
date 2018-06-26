@@ -1,4 +1,4 @@
-const Endpoint = require('../Structures/Endpoint');
+const Endpoint = require('../../Structures/Endpoint');
 const fs = require('fs');
 
 /**
@@ -13,7 +13,8 @@ class StoreEndpoint extends Endpoint {
 		super({
 			name: 'Store',
 			description: 'Returns information of a specific Store',
-			route: '/store/:search'
+			route: 'store/:search',
+			version: 1
 		});
 	}
 

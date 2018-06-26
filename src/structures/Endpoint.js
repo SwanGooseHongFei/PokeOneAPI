@@ -25,6 +25,12 @@ class Endpoint {
 		this.route = options.route;
 
 		/**
+		 * The version of this endpoint
+		 * @type {number}
+		 */
+		this.version = options.version || 0;
+
+		/**
 		 * The database in use
 		 * @type {Database}
 		 */
@@ -40,10 +46,12 @@ class Endpoint {
 		if (!this.name) throw new Error('Endpoint requires a name');
 		if (!this.description) throw new Error('Endpoint requires a description');
 		if (!this.route) throw new Error('Endpoint requires a route');
+		if (!this.version) throw new Error('Endpoint requires a version');
 
 		if (typeof this.name !== 'string') throw new TypeError('Endpoint name must be a string');
 		if (typeof this.description !== 'string') throw new TypeError('Endpoint description must be a string');
 		if (typeof this.route !== 'string') throw new TypeError('Endpoint route must be a string');
+		if (typeof this.version !== 'number') throw new TypeError('Endpoint version must be a number');
 		if (typeof this.admin !== 'boolean') throw new TypeError('Endpoint admin property must be a boolean');
 	}
 
@@ -56,13 +64,17 @@ class Endpoint {
 	 */
 	async checkAuth(req, res, methodAdminOnly = false) {
 		const auth = req.header('Authorization', null);
-		console.log(auth);
+		const type = req.url.match(/\/(public|private)\/v\d{1,2}\//)[1];
 		if (!auth) {
 			this.missingAuth(req, res);
 			return false;
 		}
 		const result = await this.database.users.find(
-			{ where: { token: auth } }
+			{
+				where: {
+					token: auth
+				}
+			}
 		);
 		if (!result) {
 			this.missingAuth(req, res);
@@ -72,6 +84,10 @@ class Endpoint {
 			this.missingPermission(req, res);
 			return false;
 		}
+		if (result.type !== type) {
+			this.missingAuth(req, res, `Please use the ${result.type} endpoints.`);
+			return false;
+		}
 		return true;
 	}
 
@@ -79,9 +95,10 @@ class Endpoint {
 	 * Method to call on missing Authorization
 	 * @param {Request} req Request to handle
 	 * @param {Response} res Response to send
+	 * @param {string} message Custom message if wanted
 	 */
-	missingAuth(req, res) {
-		res.json(401, { status: 401, message: 'Unauthorized' });
+	missingAuth(req, res, message) {
+		res.json(401, { status: 401, message: `Unauthorized${message ? `\n${message}` : ''}` });
 		res.end();
 	}
 

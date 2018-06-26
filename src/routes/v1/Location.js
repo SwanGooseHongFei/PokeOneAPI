@@ -1,19 +1,20 @@
-const Endpoint = require('../Structures/Endpoint');
+const Endpoint = require('../../Structures/Endpoint');
 const fs = require('fs');
 
 /**
- * Achievements Endpoint
+ * Location Endpoint
  * @property {string} name
  * @property {string} description
  * @property {string} route
  * @extends {Endpoint}
  */
-class AchievementsEndpoint extends Endpoint {
+class LocationEndpoint extends Endpoint {
 	constructor() {
 		super({
-			name: 'Achievemnts',
-			description: 'Returns information of a specific Achievement',
-			route: '/achievements/:search'
+			name: 'Location',
+			description: 'Returns information of a specific Location',
+			route: 'location/:search',
+			version: 1
 		});
 	}
 
@@ -28,19 +29,19 @@ class AchievementsEndpoint extends Endpoint {
 		if (!await this.checkAuth(req, res)) return true;
 		try {
 			if (!req.params.search) return this.badRequest(req, res);
-			const p1AchievementsData = req.params.search;
+			const locationData = req.params.search;
 
-			if (fs.existsSync('./data/ingame/achievements.json')) {
-				const p1AchievementsInfo = JSON.parse(fs.readFileSync('./data/ingame/achievements.json'));
+			if (fs.existsSync('./data/ingame/location.json')) {
+				const locationInfo = JSON.parse(fs.readFileSync('./data/ingame/location.json'));
 
-				if (p1AchievementsInfo[p1AchievementsData]) {
+				if (locationInfo[locationData]) {
 					return this.success(req, res, {
 						status: '200',
-						search: p1AchievementsData,
-						data: p1AchievementsInfo[p1AchievementsData]
+						search: locationData,
+						info: locationInfo[locationData]
 					});
 				} else {
-					return this.notFound(req, res, `Couldn't find achievement ${p1AchievementsData}`);
+					return this.notFound(req, res, `Couldn't find location ${locationData}`);
 				}
 			} else {
 				return this.notFound(req, res, 'File not found on disk');
@@ -51,4 +52,4 @@ class AchievementsEndpoint extends Endpoint {
 	}
 }
 
-module.exports = AchievementsEndpoint;
+module.exports = LocationEndpoint;
