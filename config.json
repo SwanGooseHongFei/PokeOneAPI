@@ -1,0 +1,14 @@
+{
+	"rateList": {
+		"public": {
+			"comment_timeWindow": "Time windows in seconds",
+			"timeWindow": 900,
+			"comment_callsPerWindow": "Amount of API calls per time window",
+			"callsPerWindow": 5
+		},
+		"private": {
+			"timeWindow": 1,
+			"callsPerWindow": 50
+		}
+	}
+}

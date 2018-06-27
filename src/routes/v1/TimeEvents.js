@@ -33,12 +33,8 @@ class TimeEventsEndpoint extends Endpoint {
 			// Setting it to use the servers timezone of UTC-10
 			const now = moment().utcOffset('-1000');
 
-			console.log(now);
-
 			// Daily reset
 			const dailyReset = this.difference(now, now.day() + 1);
-
-			console.log(now);
 
 			// Bugcontest is on: saturday, monday, thursday
 			const bugContest = [1, 4, 6].includes(now.day()) ? 'Now' :
@@ -90,10 +86,6 @@ class TimeEventsEndpoint extends Endpoint {
 
 			const santos = now.day() === 6 ? 'Now' : this.difference(now, now.day() < 6 ? 6 : 13);
 
-			console.log(now);
-
-			console.log(this.difference(now, 13));
-
 			return this.success(req, res, {
 				dailyReset: dailyReset,
 				bug: bugContest,
@@ -131,11 +123,6 @@ class TimeEventsEndpoint extends Endpoint {
 			.minutes(0)
 			.diff(now));
 
-		console.log(moment().days(day).hours(0)
-			.minutes(0));
-		console.log(now);
-
-		console.log(reset.humanize());
 		return reset.days() >= 1 ? `in ${reset.days() + 1}day${reset.days() === 1 ? '' : 's'}` :
 			`in ${reset.hours()}h:${reset.minutes()}m:${reset.seconds()}s`;
 	}

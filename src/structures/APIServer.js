@@ -4,6 +4,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const readDirAsync = promisify(fs.readdir);
 const restify = require('restify');
+const StatusChecker = require('./StatusChecker');
 
 /**
  * Class to instance the Restify Server
@@ -22,20 +23,7 @@ class APIServer {
 		this.server.use(bodyParser.json());
 		this.server.use(bodyParser.urlencoded({ extended: false }));
 
-		const rateList = {
-			public: {
-				// Time windows in seconds
-				timeWindow: 15 * 60,
-				// Amount of API calls per time window
-				callsPerWindow: 5
-			},
-			private: {
-				// Time windows in seconds
-				timeWindow: 1,
-				// Amount of API calls per time window
-				callsPerWindow: 1
-			}
-		};
+		const { rateList } = require('../../config.json');
 
 		this.limiterList = {};
 
@@ -67,6 +55,29 @@ class APIServer {
 			default: 'index.html',
 			appendRequestPath: false
 		}));
+
+		/**
+		 * Statuschecker list
+		 * @type {StatusChecker[]}
+		 */
+		this.statusChecker = {};
+
+		this.statusChecker.server = new StatusChecker({
+			ip: '95.183.48.4',
+			port: 2012,
+			name: 'server'
+		});
+
+		this.statusChecker.website = new StatusChecker({
+			ip: 'poke.one',
+			port: 80,
+			name: 'website'
+		});
+
+		for (const checker in this.statusChecker) {
+			this.statusChecker[checker].check();
+			setInterval(() => this.statusChecker[checker].check(), 1 * 60 * 1000);
+		}
 	}
 
 	/**
