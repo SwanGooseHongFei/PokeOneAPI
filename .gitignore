@@ -1,0 +1,10 @@
+# Packages
+website/
+pics/
+node_modules/
+yarn.lock
+*lock.json
+settings.json
+.opennode
+*.sqlite3
+*.log

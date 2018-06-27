@@ -1,3 +1,0 @@
-node api.js
-
-pause
